@@ -1,141 +1,70 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import Logo from '../Logo'
+import React, {useState} from 'react'
+import { Button, Container, Loading, Logo, LogoutBtn } from "../index"
+import { Link, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 export default function Footer() {
- return (
-  <section className="relative overflow-hidden py-10 bg-gray-400 border border-t-2 border-t-black">
-  <div className="relative z-10 mx-auto max-w-7xl px-4">
-  <div className="-m-6 flex flex-wrap">
-  <div className="w-full p-6 md:w-1/2 lg:w-5/12">
-  <div className="flex h-full flex-col justify-between">
-  <div className="mb-4 inline-flex items-center">
-  <Logo width="100px" />
-  </div>
-  <div>
-  <p className="text-sm text-gray-600">
-  &copy; Copyright 2023. All Rights Reserved by DevUI.
-  </p>
-  </div>
-  </div>
-  </div>
-  <div className="w-full p-6 md:w-1/2 lg:w-2/12">
-  <div className="h-full">
-  <h3 className="tracking-px mb-9  text-xs font-semibold uppercase text-gray-500">
-  Company
-  </h3>
-  <ul>
-  <li className="mb-4">
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Features
+
+ const [loading, setloading] = useState(false);
+
+ const navigate = useNavigate();
+
+ const authStatus = useSelector(state => state.auth.status);
+ const navItems = useSelector(state => state.nav.navItems)
+ const authItems = useSelector(state => state.nav.authItems)
+
+ return !loading ? (
+  <footer 
+  className={`relative grid bg-zinc-200 text-black w-full shadow`}>
+  <Container>
+  
+  <div 
+  className='w-full flex items-center justify-center py-6'>
+  <Link to="/">
+  <Logo width="100px"/>
   </Link>
-  </li>
-  <li className="mb-4">
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Pricing
-  </Link>
-  </li>
-  <li className="mb-4">
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Affiliate Program
-  </Link>
-  </li>
-  <li>
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Press Kit
-  </Link>
-  </li>
+  </div>
+
+  <nav 
+  className={`grid w-full`}>
+  <ul 
+  className='w-full px-2 py-4 grid items-center justify-center gap-2'>
+  {navItems.map(item => item.active ? (
+   <li key={item.slug}>
+   <Button onClick={() => navigate(item.slug)}
+   className='w-full'>
+   {item.name}
+   </Button>
+   </li>
+  ) : null )} 
   </ul>
-  </div>
-  </div>
-  <div className="w-full p-6 md:w-1/2 lg:w-2/12">
-  <div className="h-full">
-  <h3 className="tracking-px mb-9  text-xs font-semibold uppercase text-gray-500">
-  Support
-  </h3>
-  <ul>
-  <li className="mb-4">
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Account
-  </Link>
-  </li>
-  <li className="mb-4">
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Help
-  </Link>
-  </li>
-  <li className="mb-4">
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Contact Us
-  </Link>
-  </li>
-  <li>
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Customer Support
-  </Link>
-  </li>
+
+  <ul 
+  dir='ltr'
+  className='w-full px-2 py-4 grid items-center justify-center gap-2'>
+  {
+   !authStatus ? (
+    authItems.map(item => 
+     <li key={item.slug}>
+     <Button 
+     onClick={() => navigate(item.slug)}
+     className='w-full'>
+     {item.name}
+     </Button>
+     </li>
+    )
+   ) : (
+    <li>
+    <LogoutBtn className=''/>
+    </li>
+   )
+  }
   </ul>
-  </div>
-  </div>
-  <div className="w-full p-6 md:w-1/2 lg:w-3/12">
-  <div className="h-full">
-  <h3 className="tracking-px mb-9  text-xs font-semibold uppercase text-gray-500">
-  Legals
-  </h3>
-  <ul>
-  <li className="mb-4">
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Terms &amp; Conditions
-  </Link>
-  </li>
-  <li className="mb-4">
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Privacy Policy
-  </Link>
-  </li>
-  <li>
-  <Link
-  className=" text-base font-medium text-gray-900 hover:text-gray-700"
-  to="/"
-  >
-  Licensing
-  </Link>
-  </li>
-  </ul>
-  </div>
-  </div>
-  </div>
-  </div>
-  </section>
+  </nav>
+  
+  </Container>
+  </footer>
+ ) : (
+  <Loading />
  )
 }
